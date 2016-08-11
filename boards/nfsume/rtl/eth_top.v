@@ -468,6 +468,51 @@ sram_mig u_sram_mig (
 );
 
 
+localparam SRAM_IDLE  = 2'b00,
+           SRAM_WRITE = 2'b01,
+           SRAM_READ  = 2'b10,
+           SRAM_WAIT  = 2'b11;
+
+reg [ 1:0] state_sram;
+reg [31:0] cnt;
+reg [18:0] addr;
+reg [15:0] waitcnt;
+
+assign app_wr_cmd0  = state_sram == SRAM_WRITE;
+assign app_wr_data0 = (state_sram == SRAM_WRITE) ? {cnt, cnt, cnt, cnt, 16'habcd} : 0;
+assign app_wr_addr0 = (state_sram == SRAM_WRITE) ? cnt[18:0] : 0;
+assign app_wr_bw_n0 = (state_sram == SRAM_WRITE) ? 16'hffff : 0;
+
+assign app_rd_cmd0  = state_sram == SRAM_READ;
+assign app_rd_addr0 = (state_sram == SRAM_READ) ? addr : 0;
+
+always  @ (posedge sram_clk) begin
+	if (rst_clk) begin
+		state_sram <= 0;
+		cnt        <= 0;
+		addr       <= 0;
+		waitcnt    <= 0;
+	end else begin
+		cnt <= cnt + 1;
+		case (state_sram)
+			SRAM_IDLE : if (init_calib_complete) state_sram <= 1;
+			SRAM_WRITE: begin
+				state_sram <= 2;
+				addr <= cnt[18:0];
+			end
+			SRAM_READ : state_sram <= 1;
+			SRAM_WAIT : begin
+				if (waitcnt == 16'hffff) begin
+					state <= 1;
+					waitcnt <= 0;
+				end else 
+					waitcnt <= waitcnt + 1;
+			end
+			default : state_sram <= 0;
+		endcase
+	end
+end
+
 ila_0 your_instance_name (
 	.clk(sram_clk), // input wire clk
 	.probe0({
@@ -482,47 +527,6 @@ ila_0 your_instance_name (
 	) // input wire [255:0] probe0
 );
 
-
-reg [1:0] state_sram;
-
-reg [31:0] cnt;
-reg [18:0] addr;
-reg [15:0] waitcnt;
-
-assign app_wr_cmd0 = state_sram == 1;
-assign app_wr_data0 = (state_sram == 1) ? {cnt, cnt, cnt, cnt, 16'habcd} : 0;
-assign app_wr_addr0 = (state_sram == 1) ? cnt[18:0] : 0;
-assign app_wr_bw_n0 = (state_sram == 1) ? 16'hffff : 0;
-
-assign app_rd_cmd0 = state_sram == 2;
-assign app_rd_addr0 = (state_sram == 2) ? addr : 0;
-
-
-
-always  @ (posedge sram_clk) begin
-	if (rst_clk) begin
-		state_sram <= 0;
-		cnt <= 0;
-		addr <= 0;
-		waitcnt <= 0;
-	end else begin
-		cnt <= cnt + 1;
-		case (state_sram)
-			0: if (init_calib_complete) state_sram <= 1;
-			1: begin
-				state_sram <= 2;
-				addr <= cnt[18:0];
-			end
-			2: state_sram <= 1;
-			3: if (waitcnt == 16'hffff) begin
-				state <= 1;
-				waitcnt <= 0;
-			end else 
-				waitcnt <= waitcnt + 1;
-			default : state_sram <= 0;
-		endcase
-	end
-end
 
 
 
