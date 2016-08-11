@@ -503,7 +503,7 @@ always  @ (posedge sram_clk) begin
 			SRAM_READ : state_sram <= 1;
 			SRAM_WAIT : begin
 				if (waitcnt == 16'hffff) begin
-					state <= 1;
+					state_sram <= 1;
 					waitcnt <= 0;
 				end else 
 					waitcnt <= waitcnt + 1;
