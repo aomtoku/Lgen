@@ -483,10 +483,11 @@ ila_0 your_instance_name (
 );
 
 
-reg state_sram;
+reg [1:0] state_sram;
 
 reg [31:0] cnt;
 reg [18:0] addr;
+reg [15:0] waitcnt;
 
 assign app_wr_cmd0 = state_sram == 1;
 assign app_wr_data0 = (state_sram == 1) ? {cnt, cnt, cnt, cnt, 16'habcd} : 0;
@@ -503,6 +504,7 @@ always  @ (posedge sram_clk) begin
 		state_sram <= 0;
 		cnt <= 0;
 		addr <= 0;
+		waitcnt <= 0;
 	end else begin
 		cnt <= cnt + 1;
 		case (state_sram)
@@ -512,6 +514,11 @@ always  @ (posedge sram_clk) begin
 				addr <= cnt[18:0];
 			end
 			2: state_sram <= 1;
+			3: if (waitcnt == 16'hffff) begin
+				state <= 1;
+				waitcnt <= 0;
+			end else 
+				waitcnt <= waitcnt + 1;
 			default : state_sram <= 0;
 		endcase
 	end
