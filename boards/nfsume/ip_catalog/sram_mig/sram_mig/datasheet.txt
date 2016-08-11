@@ -1,0 +1,58 @@
+
+
+Vivado Project Options:
+   Target Device                   : xc7vx690t-ffg1761
+   Speed Grade                     : -3
+   HDL                             : verilog
+   Synthesis Tool                  : VIVADO
+
+MIG Output Options:
+   Module Name                     : sram_mig
+   No of Controllers               : 1
+   Selected Compatible Device(s)   : --
+
+FPGA Options:
+   System Clock Type               : Single-Ended
+   Reference Clock Type            : Use System Clock
+   Debug Port                      : OFF
+   Internal Vref                   : disabled
+
+Extended FPGA Options:
+   DCI for Data Read (Q)           : enabled
+   Internal Termination (HR Banks) : 50 Ohms
+    
+/*******************************************************/
+/*                  Controller 0                       */
+/*******************************************************/
+Controller Options :
+   Memory                 : QDRIIPLUS_SRAM
+   Design Clock Frequency : 2000 ps (  0.00 MHz)
+   Input Clock Period     : 5000 ps
+   CLKFBOUT_MULT (PLL)    : 5
+   DIVCLK_DIVIDE (PLL)    : 1
+   VCC_AUX IO             : 1.8V
+   Memory Type            : Components-BL4
+   Memory Part            : CY7C25652KV18-500BZC
+   Equivalent Part(s)     : --
+   Data Width             : 36
+   Fixed Latency Mode     : 0
+   Phy Latency Value      : 0
+
+
+Bank Selections:
+
+System_Clock: 
+	SignalName: sys_clk_i
+		PadLocation: AD32  Bank: 16
+
+System_Control: 
+	SignalName: sys_rst
+		PadLocation: No connect  Bank: Select Bank
+	SignalName: init_calib_complete
+		PadLocation: No connect  Bank: Select Bank
+	SignalName: tg_compare_error
+		PadLocation: No connect  Bank: Select Bank
+
+
+
+    
