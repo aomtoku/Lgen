@@ -1,7 +1,7 @@
 // Copyright 1986-2015 Xilinx, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2015.4 (lin64) Build 1412921 Wed Nov 18 09:44:32 MST 2015
-// Date        : Thu Aug 11 17:12:25 2016
+// Date        : Thu Aug 11 18:41:53 2016
 // Host        : jgn-tv4 running 64-bit unknown
 // Command     : write_verilog -force -mode synth_stub
 //               /home/aom/work/Lgen/boards/nfsume/ip_catalog/sram_mig/sram_mig_stub.v
